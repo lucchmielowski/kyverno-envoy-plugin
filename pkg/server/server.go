@@ -2,7 +2,11 @@ package server
 
 import (
 	"context"
+
+	"github.com/kyverno/kyverno-envoy-plugin/pkg/log"
 )
+
+var serverLogger = log.RegisterScope("server", "Authorization Server")
 
 type Server interface {
 	Run(context.Context) error

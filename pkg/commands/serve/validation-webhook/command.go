@@ -6,6 +6,7 @@ import (
 
 	"github.com/kyverno/kyverno-envoy-plugin/apis/v1alpha1"
 	apolcompiler "github.com/kyverno/kyverno-envoy-plugin/pkg/engine/apol/compiler"
+	"github.com/kyverno/kyverno-envoy-plugin/pkg/log"
 	"github.com/kyverno/kyverno-envoy-plugin/pkg/probes"
 	"github.com/kyverno/kyverno-envoy-plugin/pkg/signals"
 	"github.com/kyverno/kyverno-envoy-plugin/pkg/webhook/validation"
@@ -64,7 +65,7 @@ func Command() *cobra.Command {
 					// register validation webhook
 					compileFunc := func(policy *v1alpha1.AuthorizationPolicy) field.ErrorList {
 						_, err := compiler.Compile(policy)
-						fmt.Println("validating policy", policy.Name, err)
+						log.Infof("validating policy %s %v", policy.Name, err)
 						return err
 					}
 					if err := ctrl.NewWebhookManagedBy(mgr).For(&v1alpha1.AuthorizationPolicy{}).WithValidator(validation.NewValidator(compileFunc)).Complete(); err != nil {

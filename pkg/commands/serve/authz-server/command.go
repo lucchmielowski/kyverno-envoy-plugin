@@ -13,6 +13,7 @@ import (
 	apolcompiler "github.com/kyverno/kyverno-envoy-plugin/pkg/engine/apol/compiler"
 	apolprovider "github.com/kyverno/kyverno-envoy-plugin/pkg/engine/apol/provider"
 	genericproviders "github.com/kyverno/kyverno-envoy-plugin/pkg/engine/generic/providers"
+	"github.com/kyverno/kyverno-envoy-plugin/pkg/log"
 	"github.com/kyverno/kyverno-envoy-plugin/pkg/probes"
 	"github.com/kyverno/kyverno-envoy-plugin/pkg/signals"
 	"github.com/spf13/cobra"
@@ -23,6 +24,8 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 )
+
+var scope = log.RegisterScope("authz-server", "")
 
 func Command() *cobra.Command {
 	var probesAddress string
@@ -79,6 +82,7 @@ func Command() *cobra.Command {
 								BindAddress: metricsAddress,
 							},
 						})
+						ctrl.SetLogger(log.NewLogrAdapter(scope))
 						if err != nil {
 							return fmt.Errorf("failed to construct manager: %w", err)
 						}
