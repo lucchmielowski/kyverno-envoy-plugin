@@ -2,7 +2,6 @@ package authz
 
 import (
 	"context"
-	"fmt"
 
 	authv3 "github.com/envoyproxy/go-control-plane/envoy/service/auth/v3"
 	"github.com/kyverno/kyverno-envoy-plugin/pkg/engine"
@@ -17,7 +16,7 @@ func (s *service) Check(ctx context.Context, r *authv3.CheckRequest) (*authv3.Ch
 	response, err := s.check(ctx, r)
 	// log error if any
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(err, "error on check response")
 	}
 	// return response and error
 	return response, err

@@ -10,11 +10,14 @@ import (
 	"github.com/kyverno/kyverno-envoy-plugin/apis/v1alpha1"
 	"github.com/kyverno/kyverno-envoy-plugin/pkg/engine"
 	"github.com/kyverno/kyverno-envoy-plugin/pkg/engine/apol/compiler"
+	"github.com/kyverno/kyverno-envoy-plugin/pkg/log"
 	"golang.org/x/exp/maps"
 	"k8s.io/apimachinery/pkg/api/errors"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
+
+var logger = log.WithName("apol-provider")
 
 func NewKubeProvider(mgr ctrl.Manager, compiler compiler.Compiler) (engine.Provider, error) {
 	r := newPolicyReconciler(mgr.GetClient(), compiler)
@@ -80,7 +83,9 @@ func (r *policyReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 	}
 	compiled, errs := r.compiler.Compile(&policy)
 	if len(errs) > 0 {
-		fmt.Println(errs)
+		for _, err := range errs {
+			logger.Error(err, "Policy compilation failed for policy %v", policy.Name)
+		}
 		// No need to retry it
 		return ctrl.Result{}, nil
 	}

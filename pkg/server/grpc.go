@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"net"
 
 	"google.golang.org/grpc"
@@ -10,7 +9,7 @@ import (
 )
 
 func RunGrpc(ctx context.Context, server *grpc.Server, listener net.Listener) error {
-	defer fmt.Println("GRPC Server stopped")
+	defer logger.Info("GRPC Server stopped")
 	// create a wait group
 	var group wait.Group
 	// wait all tasks in the group are over
@@ -23,11 +22,11 @@ func RunGrpc(ctx context.Context, server *grpc.Server, listener net.Listener) er
 	group.StartWithContext(ctx, func(ctx context.Context) {
 		// wait context cancelled
 		<-ctx.Done()
-		fmt.Println("GRPC Server shutting down...")
+		logger.Info("GRPC Server shutting down...")
 		// gracefully shutdown server
 		server.GracefulStop()
 	})
-	fmt.Printf("GRPC Server starting at %s...\n", listener.Addr())
+	logger.Info("GRPC Server starting at %s...\n", listener.Addr())
 	// serve
 	return server.Serve(listener)
 }
