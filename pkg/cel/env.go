@@ -11,6 +11,7 @@ import (
 	httpauth "github.com/kyverno/kyverno-envoy-plugin/pkg/cel/libs/http"
 	jsoncel "github.com/kyverno/kyverno-envoy-plugin/pkg/cel/libs/json"
 	"github.com/kyverno/kyverno-envoy-plugin/pkg/cel/libs/jwt"
+	"github.com/kyverno/kyverno-envoy-plugin/pkg/cel/libs/mcp"
 	vpol "github.com/kyverno/kyverno/api/policies.kyverno.io/v1alpha1"
 
 	"github.com/kyverno/kyverno/pkg/cel/libs/http"
@@ -61,6 +62,7 @@ func NewEnv(evalMode vpol.EvaluationMode) (*cel.Env, error) {
 		http.Lib(),
 		jwt.Lib(),
 		jsoncel.Lib(&jsonimpl.JsonImpl{}),
+		mcp.Lib(),
 		resource.Lib(),
 		image.Lib(),
 		imagedata.Lib(),
